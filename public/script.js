@@ -112,3 +112,48 @@ document.getElementById("payment-form").onsubmit = async (e) => {
 function viewAllPayments() {
   window.open("/all-payments.html", "_blank");
 }
+
+function addBulkRow() {
+  const tbody = document.querySelector("#bulk-table tbody");
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td><input type="text" name="serial_no"></td>
+    <td><input type="date" name="date"></td>
+    <td><input type="text" name="dc_no"></td>
+    <td><input type="text" name="vehicle_no"></td>
+    <td><input type="text" name="material"></td>
+    <td><input type="text" name="loading_point"></td>
+    <td><input type="text" name="unloading_point"></td>
+    <td><input type="number" name="weight"></td>
+    <td><input type="number" name="rate"></td>
+    <td><input type="text" name="contractor"></td>
+    <td><button type="button" onclick="this.closest('tr').remove()">🗑</button></td>
+  `;
+  tbody.appendChild(row);
+}
+
+// Submit handler
+document.getElementById("bulk-entry-form").onsubmit = async (e) => {
+  e.preventDefault();
+  const rows = document.querySelectorAll("#bulk-table tbody tr");
+  const entries = [];
+
+  rows.forEach(row => {
+    const entry = {};
+    row.querySelectorAll("input").forEach(input => {
+      entry[input.name] = input.value;
+    });
+    entries.push(entry);
+  });
+
+  const res = await fetch("/add-multiple-entries", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ entries }),
+  });
+
+  alert("✅ Bulk transport entries added!");
+  document.getElementById("bulk-entry-form").reset();
+  document.querySelector("#bulk-table tbody").innerHTML = "";
+  document.getElementById("bulk-entry-form").style.display = "none";
+};

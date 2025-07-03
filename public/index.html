@@ -15,6 +15,7 @@
       <button onclick="showVehicleOptions()">🚚 View by Vehicle No</button>
       <button onclick="showContractorOptions()">👷 View by Contractor</button>
       <button onclick="toggleForm('transport-form')">➕ Add Transport Entry</button>
+      <button onclick="toggleForm('bulk-entry-form')">🧾 Bulk Transport Entry</button>
       <button onclick="toggleForm('payment-form')">💰 Add Payment</button>
       <button onclick="viewAllPayments()">📋 View All Payments</button>
     </div>
@@ -46,6 +47,33 @@
       <input type="date" name="date" required />
       <button type="submit">Submit Payment</button>
     </form>
+    
+    <form id="bulk-entry-form" style="display:none">
+      <h3>Bulk Transport Entry</h3>
+      <table id="bulk-table">
+        <thead>
+          <tr>
+            <th>Serial No</th>
+            <th>Date</th>
+            <th>DC No</th>
+            <th>Vehicle No</th>
+            <th>Material</th>
+            <th>Loading Point</th>
+            <th>Unloading Point</th>
+            <th>Weight</th>
+            <th>Rate</th>
+            <th>Contractor</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Rows added dynamically -->
+        </tbody>
+      </table>
+      <button type="button" onclick="addBulkRow()">➕ Add Row</button>
+      <button type="submit">✅ Submit All</button>
+    </form>
+
 
     <div id="dynamic-buttons"></div>
     <div id="table-container"></div>

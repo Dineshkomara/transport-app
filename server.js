@@ -152,3 +152,28 @@ app.get("/transport/all", (req, res) => {
     res.json(rows);
   });
 });
+
+app.post("/add-multiple-entries", (req, res) => {
+  const entries = req.body.entries;
+  const values = entries.map(entry => [
+    entry.serial_no,
+    entry.date,
+    entry.dc_no,
+    entry.vehicle_no,
+    entry.material,
+    entry.loading_point,
+    entry.unloading_point,
+    entry.weight,
+    entry.rate,
+    entry.contractor
+  ]);
+
+  const sql = `INSERT INTO transport_data 
+    (serial_no, date, dc_no, vehicle_no, material, loading_point, unloading_point, weight, rate, contractor) 
+    VALUES ?`;
+
+  db.query(sql, [values], (err, result) => {
+    if (err) return res.status(500).json({ error: err });
+    res.json({ message: "Entries added", result });
+  });
+});
