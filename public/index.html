@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transport Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🚛 Transport Business Dashboard</h1>
+
+    <div class="btn-group">
+      <button onclick="viewAllData()">📄 View Entire Data</button>
+      <button onclick="showVehicleOptions()">🚚 View by Vehicle No</button>
+      <button onclick="showContractorOptions()">👷 View by Contractor</button>
+      <button onclick="toggleForm('transport-form')">➕ Add Transport Entry</button>
+      <button onclick="toggleForm('payment-form')">💰 Add Payment</button>
+    </div>
+
+    <!-- Transport Form -->
+    <form id="transport-form" style="display:none" enctype="multipart/form-data">
+      <h3>Transport Entry</h3>
+      <input type="text" name="serial_no" placeholder="Serial No" />
+      <input type="date" name="date" required />
+      <input type="text" name="dc_no" placeholder="DC No" required />
+      <input type="text" name="vehicle_no" placeholder="Vehicle No" required />
+      <input type="text" name="material" placeholder="Material" required />
+      <input type="text" name="loading_point" placeholder="Loading Point" required />
+      <input type="text" name="unloading_point" placeholder="Unloading Point" required />
+      <input type="number" name="weight" placeholder="Weight (in Kg)" required />
+      <input type="number" name="rate" placeholder="Rate" required />
+      <input type="text" name="contractor" placeholder="Contractor" required />
+      <label>DC Image <input type="file" name="dc_image" accept="image/*" /></label>
+      <label>Loading Weight Bill <input type="file" name="loading_weight_bill_image" accept="image/*" /></label>
+      <label>Unloading Weight Bill <input type="file" name="unloading_weight_bill_image" accept="image/*" /></label>
+      <button type="submit">Submit Transport Entry</button>
+    </form>
+
+    <!-- Payment Form -->
+    <form id="payment-form" style="display:none">
+      <h3>Payment Entry</h3>
+      <input type="text" name="contractor" placeholder="Contractor Name" required />
+      <input type="number" name="amount_paid" placeholder="Amount Paid" required />
+      <input type="date" name="date" required />
+      <button type="submit">Submit Payment</button>
+    </form>
+
+    <div id="dynamic-buttons"></div>
+    <div id="table-container"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

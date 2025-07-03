@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vehicle Data View</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"/>
+</head>
+<body>
+  <div class="container">
+    <h2 id="vehicle-title">Vehicle Data</h2>
+
+    <div class="filter-group">
+      <label>Month: <input type="month" id="monthFilter"></label>
+      <label>From: <input type="date" id="fromDate"></label>
+      <label>To: <input type="date" id="toDate"></label>
+      <button onclick="filterByDate()">Apply Filter</button>
+    </div>
+    <button onclick="downloadCSV()">⬇️ Download CSV</button>
+    <table id="vehicleTable" class="display" style="width:100%">
+      <thead></thead>
+      <tbody></tbody>
+    </table>
+
+    <div id="summary"></div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="vehicle.js"></script>
+</body>
+</html>

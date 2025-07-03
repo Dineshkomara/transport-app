@@ -1,0 +1,58 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background-color: #f4f4f4;
+}
+
+.container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h1, h2, h3 {
+  color: #333;
+}
+
+.btn-group button, button {
+  margin: 5px;
+  padding: 10px 20px;
+  border: none;
+  background: #007bff;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-group button:hover, button:hover {
+  background: #0056b3;
+}
+
+.filter-group {
+  margin: 15px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.filter-group label {
+  font-weight: bold;
+}
+
+#summary h3, #payments-log {
+  margin-top: 20px;
+  color: #222;
+}
+
+#dynamic-buttons button {
+  display: inline-block;
+  margin: 5px;
+  background: #28a745;
+  border-radius: 6px;
+}
+
+#dynamic-buttons button:hover {
+  background: #1e7e34;
+}
