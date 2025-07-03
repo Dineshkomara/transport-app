@@ -27,10 +27,15 @@ transport-app/
 │   ├── all.html
 │   ├── vehicle.html
 │   ├── contractor.html
-│   ├── uploads/
+│   ├── all-payments.html
+│   ├── script.js
+│   ├── vehicle.js
+│   ├── all-payments.js
+│   ├── all.js
+│   ├── contractor.js
 │   └── style.css
-├── script.js
-├── vehicle.js
+├── uploads/
+├── package-lock.json
 ├── contractor.js
 ├── all.js
 ├── server.js
