@@ -109,3 +109,6 @@ document.getElementById("payment-form").onsubmit = async (e) => {
   }
 };
 
+function viewAllPayments() {
+  window.open("/all-payments.html", "_blank");
+}
