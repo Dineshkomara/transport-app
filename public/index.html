@@ -47,7 +47,7 @@
       <input type="date" name="date" required />
       <button type="submit">Submit Payment</button>
     </form>
-    
+
     <form id="bulk-entry-form" style="display:none">
       <h3>Bulk Transport Entry</h3>
       <table id="bulk-table">
@@ -73,6 +73,13 @@
       <button type="button" onclick="addBulkRow()">➕ Add Row</button>
       <button type="submit">✅ Submit All</button>
     </form>
+
+    <hr>
+      <h4>📁 Bulk Upload</h4>
+      <form id="bulk-upload-form" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" required />
+        <button type="submit">Upload CSV/XLSX</button>
+      </form>
 
 
     <div id="dynamic-buttons"></div>

@@ -5,6 +5,26 @@ const cors = require("cors");
 const path = require("path");
 const app = express();
 const port = 3000;
+const fs = require("fs");
+const XLSX = require("xlsx");
+
+// Ensure 'uploads' directory exists
+const uploadDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+function formatToMySQLDate(dateStr) {
+  if (!dateStr) return null;
+  if (dateStr.includes("-")) return dateStr; // already formatted
+  const parts = dateStr.split("/");
+  if (parts.length === 3) {
+    const [day, month, year] = parts;
+    const y = year.length === 2 ? `20${year}` : year;
+    return `${y}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  }
+  return dateStr;
+}
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
@@ -38,6 +58,7 @@ app.post("/add-transport", upload.fields([
   const data = req.body;
   const files = req.files;
   const amount = (data.weight * data.rate) / 1000;
+  const formattedDate = formatToMySQLDate(data.date);
 
   db.query(
     `INSERT INTO transport_data (
@@ -47,7 +68,7 @@ app.post("/add-transport", upload.fields([
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       data.serial_no || null,
-      data.date,
+      formattedDate,
       data.dc_no,
       data.vehicle_no,
       data.material,
@@ -74,7 +95,7 @@ app.post("/add-payment", (req, res) => {
   const { contractor, amount_paid, date } = req.body;
   db.query(
     "INSERT INTO payments (contractor, amount_paid, date) VALUES (?, ?, ?)",
-    [contractor, amount_paid, date],
+    [contractor, amount_paid, formatToMySQLDate(date)],
     (err) => {
       if (err) return res.status(500).json(err);
       res.sendStatus(200);
@@ -125,7 +146,6 @@ app.get("/transport/contractor/:contractor", (req, res) => {
   );
 });
 
-// ✅ FIXED: Case-insensitive contractor match
 app.get("/payments/:contractor", (req, res) => {
   db.query(
     "SELECT * FROM payments WHERE LOWER(contractor) = LOWER(?) ORDER BY date",
@@ -154,7 +174,11 @@ app.get("/transport/all", (req, res) => {
 });
 
 app.post("/add-multiple-entries", (req, res) => {
-  const entries = req.body.entries;
+  const entries = req.body.entries.map(entry => ({
+    ...entry,
+    date: formatToMySQLDate(entry.date)
+  }));
+
   const values = entries.map(entry => [
     entry.serial_no,
     entry.date,
@@ -175,5 +199,53 @@ app.post("/add-multiple-entries", (req, res) => {
   db.query(sql, [values], (err, result) => {
     if (err) return res.status(500).json({ error: err });
     res.json({ message: "Entries added", result });
+  });
+});
+
+app.post("/upload-file", upload.single("file"), (req, res) => {
+  const file = req.file;
+  if (!file) return res.status(400).send("No file uploaded");
+
+  const ext = path.extname(file.originalname);
+  let workbook;
+  try {
+    workbook = XLSX.readFile(file.path);
+  } catch (err) {
+    return res.status(500).send("Failed to read file");
+  }
+
+  const sheetName = workbook.SheetNames[0];
+  const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
+    raw: false,
+    dateNF: "dd-mm-yyyy"
+  });
+
+  if (!data.length) return res.status(400).send("No data in file");
+
+  const values = data.map(row => [
+    row.serial_no || null,
+    formatToMySQLDate(row.date),
+    row.dc_no,
+    row.vehicle_no,
+    row.material,
+    row.loading_point,
+    row.unloading_point,
+    row.weight,
+    row.rate,
+    (row.weight * row.rate) / 1000,
+    row.contractor,
+    null, null, null
+  ]);
+
+  const sql = `INSERT INTO transport_data (
+    serial_no, date, dc_no, vehicle_no, material, loading_point,
+    unloading_point, weight, rate, amount, contractor,
+    dc_image, unloading_weight_bill_image, loading_weight_bill_image
+  ) VALUES ?`;
+
+  db.query(sql, [values], (err, result) => {
+    fs.unlinkSync(file.path);
+    if (err) return res.status(500).json({ error: err });
+    res.json({ message: "File processed", rowsInserted: result.affectedRows });
   });
 });

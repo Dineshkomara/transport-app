@@ -157,3 +157,28 @@ document.getElementById("bulk-entry-form").onsubmit = async (e) => {
   document.querySelector("#bulk-table tbody").innerHTML = "";
   document.getElementById("bulk-entry-form").style.display = "none";
 };
+
+// Handle bulk CSV/XLSX file upload
+document.getElementById("bulk-upload-form").onsubmit = async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const file = form.file.files[0];
+
+  if (!file) return alert("Please select a file!");
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await fetch("/upload-file", {
+    method: "POST",
+    body: formData
+  });
+
+  if (res.ok) {
+    alert("📁 File uploaded and transport entries added!");
+    form.reset();
+    form.style.display = "none";
+  } else {
+    alert("❌ Failed to upload file.");
+  }
+};
